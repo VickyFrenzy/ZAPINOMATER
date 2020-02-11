@@ -1,7 +1,7 @@
 {
-	"title": "ZAPINOMATER (silly overpowered admin weapon)",
-	"type": "weapon",
-	"tags": [ "fun", "comic" ],
+	"title"		:	"ZAPINOMATER (silly overpowered admin weapon)",
+	"type"		:	"weapon",
+	"tags"		:	[ "fun", "comic" ],
 	"ignore"	:
 	[
 		"*.psd",
@@ -9,8 +9,10 @@
 		"*.svn*",
 		"*.git*",
 		"*.fgd",
+		"*.md",
 		"desktop.ini",
 		"Thumbs.db",
-		"README.md"
+		"CODEOWNERS",
+		"LICENSE"
 	]
 }
