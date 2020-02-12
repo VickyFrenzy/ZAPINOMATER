@@ -54,6 +54,40 @@ if CLIENT then
 
 end
 
+local bonelist = {"ValveBiped.Bip01_R_Hand", "ValveBiped.Bip01_Head1", "LrigScull", "ValveBiped.Bip01_Pelvis", "LrigPelvis"}
+
+function SWEP:getthebone()
+
+	if !self.Owner or !IsValid(self.Owner) then
+		return
+	end
+
+	self.thebone = nil
+
+	for k, v in pairs(bonelist) do
+
+		local bone = self.Owner:LookupBone(v)
+
+		if bone then
+
+			self.thebone = bone
+
+			break
+
+		end
+
+	end
+
+	if !self.thebone then
+		self.thebone = 0
+	end
+
+	self.lastpm = self.Owner:GetModel()
+
+	return self.thebone
+
+end
+
 function SWEP:Initialize()
 
 	self:SetHoldType("magic")
@@ -62,11 +96,15 @@ end
 
 function SWEP:Think()
 
-	if SERVER then
+	if !self.Owner or !IsValid(self.Owner) or !self.Owner:Alive() then
+		return
+	end
 
-		if !self.Owner or !IsValid(self.Owner) or !self.Owner:Alive() then
-			return
-		end
+	if self.thebone == nil or self.lastpm != self.Owner:GetModel() then
+		self:getthebone()
+	end
+
+	if SERVER then
 
 		if self.Owner:Health() < 999 then
 			self.Owner:SetHealth( self.Owner:Health() + 1 )
@@ -111,7 +149,7 @@ function SWEP:PrimaryAttack()
 
 	local effectdata = EffectData()
 		effectdata:SetOrigin(trace.HitPos)
-		effectdata:SetStart(self.Owner:GetBonePosition(self.Owner:LookupBone("ValveBiped.Bip01_R_Hand")))
+		effectdata:SetStart(self.Owner:GetBonePosition(self.thebone or self:getthebone()))
 		effectdata:SetAttachment(0)
 		effectdata:SetEntity(self.Owner:GetViewModel())
 	util.Effect("ToolTracer", effectdata)
