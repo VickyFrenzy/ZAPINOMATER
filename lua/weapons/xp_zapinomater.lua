@@ -53,13 +53,13 @@ function SWEP:getthebone()
 
 	local owner = self:GetOwner()
 
-	if !owner or !IsValid(owner) then
+	if not owner or not IsValid(owner) then
 		return
 	end
 
 	self.thebone = nil
 
-	for k, v in pairs(bonelist) do
+	for _, v in pairs(bonelist) do
 
 		local bone = owner:LookupBone(v)
 
@@ -73,7 +73,7 @@ function SWEP:getthebone()
 
 	end
 
-	if !self.thebone then
+	if not self.thebone then
 		self.thebone = 0
 	end
 
@@ -93,11 +93,11 @@ function SWEP:Think()
 
 	local owner = self:GetOwner()
 
-	if !owner or !IsValid(owner) or !owner:Alive() then
+	if not owner or not IsValid(owner) or not owner:Alive() then
 		return
 	end
 
-	if self.thebone == nil or self.lastpm != owner:GetModel() then
+	if self.thebone == nil or self.lastpm ~= owner:GetModel() then
 		self:getthebone()
 	end
 
@@ -111,9 +111,9 @@ function SWEP:Think()
 			owner:SetArmor( owner:Armor() + 1 )
 		end
 
-		for k, v in pairs(ents.FindInSphere(owner:GetPos() + Vector(0, 0, 30), 32.2)) do
+		for _, v in pairs(ents.FindInSphere(owner:GetPos() + Vector(0, 0, 30), 32.2)) do
 
-			if IsValid(v) and v:Health() > 0 and v != owner then
+			if IsValid(v) and v:Health() > 0 and v ~= owner then
 
 				local d = DamageInfo()
 				d:SetDamage(512)
@@ -136,7 +136,7 @@ end
 
 function SWEP:PrimaryAttack()
 
-	if !IsFirstTimePredicted() then return end
+	if not IsFirstTimePredicted() then return end
 
 	local owner = self:GetOwner()
 
@@ -144,7 +144,7 @@ function SWEP:PrimaryAttack()
 
 	local trace = util.TraceLine(tr)
 
-	if !trace.Hit then return end
+	if not trace.Hit then return end
 
 	local effectdata = EffectData()
 		effectdata:SetOrigin(trace.HitPos)
@@ -155,7 +155,7 @@ function SWEP:PrimaryAttack()
 
 	if SERVER then
 
-		if !trace.HitNonWorld then return end
+		if not trace.HitNonWorld then return end
 
 		if IsValid(trace.Entity) and trace.Entity:Health() > 0 then
 
@@ -178,14 +178,14 @@ end
 
 function SWEP:SecondaryAttack()
 
-	if !IsFirstTimePredicted() then return end
+	if not IsFirstTimePredicted() then return end
 
 	local owner = self:GetOwner()
 
 	if SERVER then
 
-		for k, v in pairs( ents.FindInSphere(owner:GetPos(), 750) ) do
-			if IsValid(v) and v:Health() > 0 and v != owner then
+		for _, v in pairs( ents.FindInSphere(owner:GetPos(), 750) ) do
+			if IsValid(v) and v:Health() > 0 and v ~= owner then
 
 				local d = DamageInfo()
 				d:SetDamage(64)
