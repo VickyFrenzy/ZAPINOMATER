@@ -38,13 +38,6 @@ SWEP.WorldModel		= ""
 
 if CLIENT then
 
-	local function CheckBind(cmd)
-		if input.LookupBinding(cmd, true) then
-			return string.upper(input.LookupBinding(cmd, true))
-		end
-		return "N/A"
-	end
-
 	SWEP.Instructions	=	language.GetPhrase("#Valve_Primary_Attack") .. ": Kill\n\n" ..
 							language.GetPhrase("#Valve_Secondary_Attack") .. ": Kill everything near you\n\n" ..
 							"Everything that makes contact with you shall die!\n\n" ..
