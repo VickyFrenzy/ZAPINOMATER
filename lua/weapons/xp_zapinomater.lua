@@ -35,6 +35,7 @@ SWEP.DrawCrosshair	= true
 
 SWEP.ViewModel		= Model("models/weapons/c_arms.mdl")
 SWEP.WorldModel		= ""
+SWEP.UseHands		= true
 
 if CLIENT then
 
