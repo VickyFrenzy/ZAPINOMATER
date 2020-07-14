@@ -51,7 +51,9 @@ local bonelist = {"ValveBiped.Bip01_R_Hand", "ValveBiped.Bip01_Head1", "LrigScul
 
 function SWEP:getthebone()
 
-	if !self.Owner or !IsValid(self.Owner) then
+	local owner = self:GetOwner()
+
+	if !owner or !IsValid(owner) then
 		return
 	end
 
@@ -59,7 +61,7 @@ function SWEP:getthebone()
 
 	for k, v in pairs(bonelist) do
 
-		local bone = self.Owner:LookupBone(v)
+		local bone = owner:LookupBone(v)
 
 		if bone then
 
@@ -75,7 +77,7 @@ function SWEP:getthebone()
 		self.thebone = 0
 	end
 
-	self.lastpm = self.Owner:GetModel()
+	self.lastpm = owner:GetModel()
 
 	return self.thebone
 
@@ -89,36 +91,38 @@ end
 
 function SWEP:Think()
 
-	if !self.Owner or !IsValid(self.Owner) or !self.Owner:Alive() then
+	local owner = self:GetOwner()
+
+	if !owner or !IsValid(owner) or !owner:Alive() then
 		return
 	end
 
-	if self.thebone == nil or self.lastpm != self.Owner:GetModel() then
+	if self.thebone == nil or self.lastpm != owner:GetModel() then
 		self:getthebone()
 	end
 
 	if SERVER then
 
-		if self.Owner:Health() < 999 then
-			self.Owner:SetHealth( self.Owner:Health() + 1 )
+		if owner:Health() < 999 then
+			owner:SetHealth( owner:Health() + 1 )
 		end
 
-		if self.Owner:Armor() < 255 then
-			self.Owner:SetArmor( self.Owner:Armor() + 1 )
+		if owner:Armor() < 255 then
+			owner:SetArmor( owner:Armor() + 1 )
 		end
 
-		for k, v in pairs(ents.FindInSphere(self.Owner:GetPos() + Vector(0, 0, 30), 32.2)) do
+		for k, v in pairs(ents.FindInSphere(owner:GetPos() + Vector(0, 0, 30), 32.2)) do
 
-			if IsValid(v) and v:Health() > 0 and v != self.Owner then
+			if IsValid(v) and v:Health() > 0 and v != owner then
 
 				local d = DamageInfo()
 				d:SetDamage(512)
 				d:SetDamageType(DMG_DIRECT)
-				d:SetAttacker(self.Owner)
+				d:SetAttacker(owner)
 				d:SetInflictor(self)
 				d:SetDamageForce(Vector(0, 0, 10000000))
 				d:SetDamagePosition(v:GetPos())
-				d:SetReportedPosition(self.Owner:GetPos())
+				d:SetReportedPosition(owner:GetPos())
 				d:SetMaxDamage(2147483647)
 				v:TakeDamageInfo(d)
 
@@ -134,7 +138,9 @@ function SWEP:PrimaryAttack()
 
 	if !IsFirstTimePredicted() then return end
 
-	local tr = util.GetPlayerTrace(self.Owner)
+	local owner = self:GetOwner()
+
+	local tr = util.GetPlayerTrace(owner)
 
 	local trace = util.TraceLine(tr)
 
@@ -142,9 +148,9 @@ function SWEP:PrimaryAttack()
 
 	local effectdata = EffectData()
 		effectdata:SetOrigin(trace.HitPos)
-		effectdata:SetStart(self.Owner:GetBonePosition(self.thebone or self:getthebone()))
+		effectdata:SetStart(owner:GetBonePosition(self.thebone or self:getthebone()))
 		effectdata:SetAttachment(0)
-		effectdata:SetEntity(self.Owner:GetViewModel())
+		effectdata:SetEntity(owner:GetViewModel())
 	util.Effect("ToolTracer", effectdata)
 
 	if SERVER then
@@ -156,11 +162,11 @@ function SWEP:PrimaryAttack()
 			local d = DamageInfo()
 			d:SetDamage(128)
 			d:SetDamageType(DMG_ENERGYBEAM + DMG_DISSOLVE)
-			d:SetAttacker(self.Owner)
+			d:SetAttacker(owner)
 			d:SetInflictor(self)
-			d:SetDamageForce(self.Owner:GetAimVector() * 10000000)
+			d:SetDamageForce(owner:GetAimVector() * 10000000)
 			d:SetDamagePosition(trace.Entity:GetPos())
-			d:SetReportedPosition(self.Owner:GetPos())
+			d:SetReportedPosition(owner:GetPos())
 			d:SetMaxDamage(2147483647)
 			trace.Entity:TakeDamageInfo(d)
 
@@ -174,19 +180,21 @@ function SWEP:SecondaryAttack()
 
 	if !IsFirstTimePredicted() then return end
 
+	local owner = self:GetOwner()
+
 	if SERVER then
 
-		for k, v in pairs( ents.FindInSphere(self.Owner:GetPos(), 750) ) do
-			if IsValid(v) and v:Health() > 0 and v != self.Owner then
+		for k, v in pairs( ents.FindInSphere(owner:GetPos(), 750) ) do
+			if IsValid(v) and v:Health() > 0 and v != owner then
 
 				local d = DamageInfo()
 				d:SetDamage(64)
 				d:SetDamageType(DMG_DIRECT)
-				d:SetAttacker(self.Owner)
+				d:SetAttacker(owner)
 				d:SetInflictor(self)
 				d:SetDamageForce(Vector(0, 0, 10000000))
 				d:SetDamagePosition(v:GetPos())
-				d:SetReportedPosition(self.Owner:GetPos())
+				d:SetReportedPosition(owner:GetPos())
 				d:SetMaxDamage(2147483647)
 				v:TakeDamageInfo(d)
 
