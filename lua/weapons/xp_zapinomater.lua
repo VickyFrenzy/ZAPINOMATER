@@ -114,7 +114,9 @@ function SWEP:Think()
 
 		for _, v in pairs(ents.FindInSphere(owner:GetPos() + Vector(0, 0, 30), 32.2)) do
 
-			if IsValid(v) and v:Health() > 0 and v ~= owner then
+			if IsValid(v) and v:Health() > 0 and v ~= owner
+			and not v:IsWeapon() and v:GetClass() ~= "predicted_viewmodel"
+			and v:GetOwner() ~= owner then
 
 				local d = DamageInfo()
 				d:SetDamage(512)
